@@ -1,4 +1,4 @@
-import { Then, DataTable } from '@cucumber/cucumber';
+import { When, Then, DataTable } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 
 import { CustomWorld } from '../support/world';
@@ -98,6 +98,66 @@ Then(
       expect(actualPrice).toBe(expectedPrice);
 
     }
+
+  }
+);
+
+When(
+  'the user sorts products by price from low to high',
+  async function (this: CustomWorld) {
+
+    const productsPage = new ProductsPage(this.page);
+
+    await productsPage.sortByPriceLowToHigh();
+
+  }
+);
+
+When(
+  'the user sorts products by price from high to low',
+  async function (this: CustomWorld) {
+
+    const productsPage = new ProductsPage(this.page);
+
+    await productsPage.sortByPriceHighToLow();
+
+  }
+);
+
+Then(
+  'the products should be sorted by price from low to high',
+  async function (this: CustomWorld) {
+
+    const productsPage = new ProductsPage(this.page);
+
+    const actualPrices = await productsPage.getProductPrices();
+
+    const numericPrices = actualPrices.map(price =>
+      Number(price.replace('$', ''))
+    );
+
+    const sortedPrices = [...numericPrices].sort((a, b) => a - b);
+
+    expect(numericPrices).toEqual(sortedPrices);
+
+  }
+);
+
+Then(
+  'the products should be sorted by price from high to low',
+  async function (this: CustomWorld) {
+
+    const productsPage = new ProductsPage(this.page);
+
+    const actualPrices = await productsPage.getProductPrices();
+
+    const numericPrices = actualPrices.map(price =>
+      Number(price.replace('$', ''))
+    );
+
+    const sortedPrices = [...numericPrices].sort((a, b) => b - a);
+
+    expect(numericPrices).toEqual(sortedPrices);
 
   }
 );

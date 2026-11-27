@@ -6,6 +6,7 @@ export class ProductsPage {
   private readonly productNames: Locator;
   private readonly productPrices: Locator;
   private readonly page: Page;
+  private readonly sortDropdown: Locator;
 
   constructor(page: Page) {
 
@@ -18,6 +19,8 @@ export class ProductsPage {
     this.productPrices = page.locator('.inventory_item_price');
 
     this.page = page;
+
+    this.sortDropdown = page.locator('[data-test="product-sort-container"]');
 
   }
 
@@ -51,6 +54,7 @@ async getProductPrices(): Promise<string[]> {
 // Get price of a specific product
 async getProductPrice(productName: string): Promise<string> {
 
+
   const product = this.page.locator('.inventory_item').filter({
     has: this.page.locator('.inventory_item_name', {
       hasText: productName
@@ -66,5 +70,20 @@ async getProductPrice(productName: string): Promise<string> {
   return await price.innerText();
 
 }
+
+// Sort products by price: low to high
+async sortByPriceLowToHigh(): Promise<void> {
+
+  await this.sortDropdown.selectOption('lohi');
+
+}
+
+// Sort products by price: high to low
+async sortByPriceHighToLow(): Promise<void> {
+
+  await this.sortDropdown.selectOption('hilo');
+
+}
+
 
 }
